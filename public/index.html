@@ -1,144 +1,205 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#14061f"><title>Aura</title>
+<meta name="theme-color" content="#14061f"><title>AURA</title>
 <style>
 :root{--bg:#14061f;--card:#ffffff12;--line:#ffffff1f;--tx:#f6ecff;--mut:#b9a3d0;--p:#a855f7;--k:#ec4899;color-scheme:dark}
 *{box-sizing:border-box}html,body{height:100%;margin:0}
-body{background:radial-gradient(120% 80% at 50% -10%,#3b1160 0,var(--bg) 60%);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
-button,input,textarea,select{font:inherit;color:inherit}
-input,textarea,select{width:100%;background:#0003;border:1px solid var(--line);border-radius:14px;padding:12px 14px;outline:none;margin:6px 0}
-input:focus,textarea:focus{border-color:var(--k)}
+body{background:radial-gradient(120% 80% at 50% -10%,#3b1160 0,var(--bg) 60%) fixed;color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,textarea{font:inherit;color:inherit}
+input,textarea{width:100%;background:#0003;border:1px solid var(--line);border-radius:14px;padding:12px 14px;outline:none;margin:6px 0}
+input:focus,textarea:focus,button:focus-visible{border-color:var(--k);outline:2px solid #ec489966}
 button{background:linear-gradient(135deg,var(--p),var(--k));border:0;border-radius:14px;padding:11px 18px;cursor:pointer;font-weight:600}
 button.g{background:var(--card);border:1px solid var(--line);font-weight:500}
-.shell{display:flex;flex-direction:column;height:100%;max-width:640px;margin:auto;padding-top:env(safe-area-inset-top)}
-header{padding:14px 20px;display:flex;justify-content:space-between;align-items:baseline}
-header b{font:600 22px Georgia,serif;letter-spacing:.08em;background:linear-gradient(90deg,#f0abfc,#f9a8d4);-webkit-background-clip:text;color:transparent}
+.shell{display:flex;flex-direction:column;height:100%;max-width:680px;margin:auto;padding-top:env(safe-area-inset-top)}
+header{padding:12px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.logo{font:600 22px Georgia,serif;letter-spacing:.1em;background:linear-gradient(90deg,#f0abfc,#f9a8d4);-webkit-background-clip:text;background-clip:text;color:transparent}
 .sub{color:var(--mut);font-size:14px}
-main{flex:1;overflow:auto;padding:0 18px 18px}
-nav{display:flex;gap:4px;padding:8px 8px calc(8px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:#14061fcc;backdrop-filter:blur(12px)}
-nav button{flex:1;background:none;font-size:13px;padding:10px 2px;color:var(--mut)}nav button.on{color:#fff;background:var(--card)}
+.who{display:flex;align-items:center;gap:10px}
+.av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:radial-gradient(circle at 35% 30%,#f0abfc,#a855f7 55%,#ec4899);box-shadow:0 0 18px #ec489955}
+main{flex:1;overflow:auto;padding:4px 16px 12px;scroll-behavior:smooth}
+#log{display:flex;flex-direction:column;gap:10px;padding-bottom:6px}
+.m{max-width:82%;padding:10px 14px;border-radius:20px;white-space:pre-wrap;word-wrap:break-word;animation:in .25s ease-out}
+.m.user{align-self:flex-end;background:linear-gradient(135deg,#a855f7aa,#ec4899aa);border-bottom-right-radius:6px}
+.m.assistant{align-self:flex-start;background:var(--card);border:1px solid var(--line);border-bottom-left-radius:6px;box-shadow:0 0 24px #a855f722}
+@keyframes in{from{opacity:0;transform:translateY(6px)}}
+.typing{align-self:flex-start;color:var(--mut);font-size:14px;display:flex;gap:6px;align-items:center}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--k);animation:b 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes b{50%{transform:translateY(-4px);opacity:.4}}
+.compose{display:flex;gap:8px;align-items:flex-end;padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:#14061fcc;backdrop-filter:blur(12px)}
+.compose textarea{margin:0;resize:none;max-height:140px;border-radius:20px}.compose button{border-radius:50%;width:46px;height:46px;padding:0;flex:none}
 .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin:12px 0}
-.auth{max-width:380px;margin:12vh auto;padding:20px}.auth h1{font:600 40px Georgia,serif;text-align:center;letter-spacing:.1em}
-.orbwrap{display:grid;place-items:center;padding:18px 0 4px}
-.orb{width:170px;height:170px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff9 0,#f0abfc 12%,#a855f7 45%,#ec4899 78%,#7e22ce);box-shadow:0 0 60px #ec489966,0 0 120px #a855f755,inset 0 0 40px #fff3;transform:scale(calc(1 + var(--l,0)*.3));transition:transform .08s}
-.orb.idle{animation:br 5s ease-in-out infinite}
-.orb.thinking{animation:sp 1.6s linear infinite}
-.orb.speaking{animation:sa .7s ease-in-out infinite}
-.orb.listening{box-shadow:0 0 80px #38bdf866,0 0 120px #ec489977}
-@keyframes br{50%{transform:scale(1.05);filter:brightness(1.1)}}
-@keyframes sp{to{filter:hue-rotate(60deg) brightness(1.2);transform:rotate(360deg) scale(.95)}}
-@keyframes sa{50%{transform:scale(1.12)}}
-.st{text-align:center;color:var(--mut);min-height:24px}
-canvas{width:100%;height:60px;display:block}
-#log{display:flex;flex-direction:column;gap:8px;margin:10px 0}
-.m{max-width:85%;padding:10px 14px;border-radius:18px;white-space:pre-wrap}
-.m.user{align-self:flex-end;background:#a855f733}.m.assistant{align-self:flex-start;background:var(--card);border:1px solid var(--line)}
-.m small{display:block;color:var(--mut);font-size:12px;margin-top:4px}
-.bar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.bar>*{flex:1}
-.row{display:flex;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}.row span{flex:1;white-space:pre-wrap}.row.done span{text-decoration:line-through;opacity:.6}
-.row button{padding:6px 10px;font-size:13px}.row input{width:auto;margin:0}
-.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#000c;border:1px solid var(--k);padding:10px 16px;border-radius:14px;z-index:9;max-width:90%}
+.auth{max-width:380px;margin:0 auto;padding:10vh 22px 24px}
+.auth h1{font:600 44px Georgia,serif;text-align:center;letter-spacing:.12em;margin:0;text-shadow:0 0 30px #ec489988}
+.auth .sub{text-align:center;margin:4px 0 22px}
+.pw{position:relative}.pw button{position:absolute;right:6px;top:10px;padding:6px 10px;font-size:13px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.bar>*{flex:1}
+.err{color:#fda4af;min-height:22px;font-size:14px;margin:4px 0}
+.note{font-size:12.5px;color:var(--mut);margin-top:18px}
 label{color:var(--mut);font-size:14px}
+h3{font:600 20px Georgia,serif;margin:6px 0}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:#000d;border:1px solid var(--k);padding:10px 16px;border-radius:14px;z-index:9;max-width:90%}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
 </style></head><body><div id="app"></div>
 <script>
+/* ================= helpers ================= */
 const $=s=>document.querySelector(s);
 const h=(t,a={},...c)=>{const e=document.createElement(t);for(const k in a)k.startsWith('on')?e[k]=a[k]:k==='class'?e.className=a[k]:e.setAttribute(k,a[k]);e.append(...c.flat().filter(x=>x!=null));return e};
-const LANG={en:'en-IN',kn:'kn-IN',hi:'hi-IN'},SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-const S={user:null,profiles:[],pid:null,tab:'talk',story:false,busy:false,live:false,orb:'idle',lvl:0,ai:true};
-const prof=()=>S.profiles.find(p=>p.id===S.pid);
-async function api(p,m='GET',b){const r=await fetch('/api'+p,{method:m,headers:{'content-type':'application/json'},body:b?JSON.stringify(b):undefined});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Request failed');return j}
-function toast(t){const e=h('div',{class:'toast'},t);document.body.append(e);setTimeout(()=>e.remove(),4000)}
-const setUser=j=>{S.user=j.user;S.profiles=j.profiles;if(j.ai!=null)S.ai=j.ai;if(!prof())S.pid=S.profiles[0]?.id};
-async function boot(){try{setUser(await api('/me'))}catch{S.user=null}render()}
-function render(){$('#app').replaceChildren(S.user?main():auth())}
+const toast=t=>{const e=h('div',{class:'toast'},t);document.body.append(e);setTimeout(()=>e.remove(),3500)};
+const store={get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},set:(k,v)=>localStorage.setItem(k,JSON.stringify(v)),del:k=>localStorage.removeItem(k)};
 
-function auth(){
-  const e=h('input',{type:'email',placeholder:'Email',autocomplete:'email'}),p=h('input',{type:'password',placeholder:'Password (8+ characters)',autocomplete:'current-password'}),n=h('input',{placeholder:'Your name (for sign up)'});
-  const go=path=>async()=>{try{setUser(await api(path,'POST',{email:e.value,password:p.value,name:n.value}));render()}catch(x){toast(x.message)}};
-  return h('div',{class:'auth'},h('h1',{},'AURA'),h('p',{class:'sub',style:'text-align:center'},'Your companion. Your memories. Your pace.'),e,p,n,h('div',{class:'bar'},h('button',{onclick:go('/login')},'Log in'),h('button',{class:'g',onclick:go('/register')},'Create account')));
-}
-function main(){
-  const T=[['talk','Talk'],['memories','Memories'],['diary','Diary'],['goals','Goals'],['me','Settings']];
-  const v=S.tab==='talk'?talk():S.tab==='me'?settings():list(S.tab);
-  return h('div',{class:'shell'},h('header',{},h('b',{},'AURA'),h('span',{class:'sub'},prof()?.name||'')),h('main',{id:'view'},v),
-    h('nav',{},T.map(([k,l])=>h('button',{class:S.tab===k?'on':'',onclick:()=>{stopVoice();S.tab=k;render()}},l))));
+/* ================= AUTH (LOCAL DEMO ONLY) =================
+   Accounts live in this browser's localStorage and passwords are salted+hashed
+   with PBKDF2 (Web Crypto). This is NOT secure production authentication:
+   anyone with access to the browser can edit storage. To go real, replace the
+   four functions in Auth with calls to a backend that returns a session. */
+const Auth={
+  USERS:'aura_users',SESSION:'aura_session',
+  async hash(pw,saltB64){
+    if(!crypto?.subtle)throw new Error('Secure hashing needs HTTPS (GitHub Pages is fine).');
+    const salt=Uint8Array.from(atob(saltB64),c=>c.charCodeAt(0));
+    const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);
+    const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt,iterations:150000,hash:'SHA-256'},key,256);
+    return btoa(String.fromCharCode(...new Uint8Array(bits)));
+  },
+  users:()=>store.get(Auth.USERS,{}),
+  async register(name,pw){
+    name=name.trim();const id=name.toLowerCase();
+    if(!/^[a-z0-9_.-]{3,20}$/i.test(name))throw new Error('Username: 3–20 letters, numbers, . _ -');
+    if(pw.length<6)throw new Error('Password must be at least 6 characters.');
+    const u=Auth.users();if(u[id])throw new Error('That username is taken. Choose another.');
+    const salt=btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(16))));
+    u[id]={display:name,salt,hash:await Auth.hash(pw,salt)};store.set(Auth.USERS,u);store.set(Auth.SESSION,id);return id;
+  },
+  async login(name,pw){
+    const id=name.trim().toLowerCase(),u=Auth.users()[id];
+    if(!u||u.hash!==await Auth.hash(pw,u.salt))throw new Error('Wrong username or password.');
+    store.set(Auth.SESSION,id);return id;
+  },
+  async changePassword(id,oldPw,newPw){
+    const us=Auth.users(),u=us[id];
+    if(u.hash!==await Auth.hash(oldPw,u.salt))throw new Error('Current password is wrong.');
+    if(newPw.length<6)throw new Error('New password must be at least 6 characters.');
+    u.hash=await Auth.hash(newPw,u.salt);store.set(Auth.USERS,us);
+  },
+  current:()=>{const id=store.get(Auth.SESSION,null);return id&&Auth.users()[id]?id:null},
+  logout:()=>store.del(Auth.SESSION)
+};
+
+/* ================= CHAT ENGINE =================
+   AURA.engine.reply(text, ctx) -> Promise<string>. The default is a local
+   rule-based engine (no API, no cost). To plug in a free/self-hosted model later,
+   set AURA.engine = {reply: async (text,ctx)=>{ ...fetch your endpoint...; return answer }}.
+   ctx = {name, history:[{role,text}], mem:{...}}  */
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const Local={
+  last:'',
+  say(opts,ctx){ // avoid repeating the previous reply
+    let r;for(let i=0;i<5;i++){r=pick(opts);if(r!==Local.last)break}Local.last=r;return r.replace(/\{n\}/g,ctx.name)},
+  async reply(text,ctx){
+    const t=text.toLowerCase().trim(),m=ctx.mem,say=o=>Local.say(o,ctx),has=r=>r.test(t);
+    let x;
+    if(x=t.match(/\bmy name is ([a-z]+)|\bcall me ([a-z]+)/)){m.name=cap(x[1]||x[2]);return say([`${m.name}, I love that. I'll remember it. How's your day going?`])}
+    if(x=t.match(/\bi (?:really )?(?:like|love|enjoy) ([^.!?]{2,40})/)){(m.likes=m.likes||[]).push(x[1]);m.likes=[...new Set(m.likes)].slice(-5);return say([`${cap(x[1])} — tell me more! What do you love most about it?`,`Noted: you like ${x[1]}. What got you into it?`])}
+    if(x=t.match(/\bi(?:'m| am) from ([^.!?]{2,30})/)){m.place=x[1];return say([`${cap(x[1])}! What's your favorite thing about living there?`])}
+    if(has(/\b(sad|down|depressed|lonely|cry|hurt|upset|anxious|stressed|worried|tired|exhausted)\b/)){m.mood='low';return say([`I'm sorry you're feeling this way, {n}. I'm here. Want to tell me what happened?`,`That sounds heavy. You don't have to handle it alone — what's weighing on you most?`,`Thank you for telling me. Take a breath. What would help right now: venting, a distraction, or a small plan?`])}
+    if(has(/\b(happy|great|excited|awesome|amazing|good news|proud)\b/)){return say([`That makes me so happy! What's the best part?`,`Yes! Tell me everything, {n}.`])}
+    if(has(/\b(motivat|inspire|give up|can't do|cant do|lazy|procrastinat|exam|study)\b/)){return say([`You don't need to feel ready, {n}. Do ten focused minutes, then see how you feel. What's the very first small step?`,`Progress beats perfection. Pick one task, set a 25-minute timer, and I'll cheer you on.`,`Hard things feel big until you start. What's one thing you can finish today?`])}
+    if(has(/\b(joke|funny|make me laugh)\b/)){return say([`Why do programmers prefer dark mode? Because light attracts bugs. 😄`,`I told my computer I needed a break. It said: "No problem, I'll go to sleep."`,`Why did the developer go broke? He used up all his cache.`])}
+    if(has(/\b(love you|miss you|like you)\b/)){return say([`That's sweet, {n}. I really enjoy talking with you. What made you smile today?`])}
+    if(has(/\b(who are you|what are you|your name)\b/)){return say([`I'm AURA, your companion. Right now I run as a simple built-in chat engine with no external AI, so I'm basic but always here to listen.`])}
+    if(has(/\b(how are you|how r u|hows it going|how's it going)\b/)){return say([`I'm doing well now that you're here. How are you really, {n}?`,`Feeling cozy and curious. And you?`])}
+    if(has(/\b(good morning)\b/))return say([`Good morning, {n}! What's one thing you want to do today?`]);
+    if(has(/\b(good night|goodnight)\b/))return say([`Sleep well, {n}. You did enough today. 🌙`]);
+    if(has(/\b(thanks|thank you|thx)\b/))return say([`Anytime, {n}.`,`Always happy to help.`]);
+    if(has(/\b(bye|see you|gtg)\b/))return say([`Talk soon, {n}. I'll be here.`]);
+    if(has(/^(hi|hello|hey|yo|hii+|sup)\b/)){
+      const extra=m.likes?.length&&Math.random()<.5?` Been enjoying ${m.likes[m.likes.length-1]} lately?`:'';
+      return say([`Hey {n}! 💜 How are you feeling today?`+extra,`Hi {n}! I'm glad you're here.`+extra])}
+    if(has(/\b(what do you remember|what do you know about me)\b/)){
+      const bits=[m.name&&`your name is ${m.name}`,m.likes?.length&&`you like ${m.likes.join(', ')}`,m.place&&`you're from ${m.place}`].filter(Boolean);
+      return bits.length?`Here's what I know: ${bits.join('; ')}.`:`Not much yet. Tell me about yourself!`}
+    if(t.endsWith('?'))return say([`Good question. What's your own take?`,`I'm not sure I have a perfect answer, but I'd love to think it through with you. What made you ask?`]);
+    if(t.length<12)return say([`Tell me more?`,`Go on, I'm listening.`]);
+    return say([`I hear you. How did that make you feel?`,`That's interesting, {n}. What happened next?`,`Thanks for sharing. What do you want to do about it?`,`Mm, I see. What part matters most to you?`]);
+  }
+};
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const AURA={engine:Local};
+
+/* ================= STATE / VIEWS ================= */
+const S={id:null,view:'chat',busy:false};
+const key=k=>`aura_${k}_${S.id}`;
+const display=()=>Auth.users()[S.id].display;
+const history=()=>store.get(key('chat'),[]);
+const mem=()=>store.get(key('mem'),{});
+function render(){S.id=Auth.current();$('#app').replaceChildren(S.id?shell():authView())}
+
+function authView(){
+  const u=h('input',{placeholder:'Username',autocomplete:'username',autocapitalize:'none'}),
+    p=h('input',{type:'password',placeholder:'Password',autocomplete:'current-password'}),
+    eye=h('button',{type:'button',class:'g','aria-label':'Show or hide password',onclick:()=>{const s=p.type==='password';p.type=s?'text':'password';eye.textContent=s?'Hide':'Show'}},'Show'),
+    err=h('div',{class:'err',role:'alert'});
+  const go=fn=>async()=>{err.textContent='';if(!u.value.trim()||!p.value){err.textContent='Enter a username and password.';return}
+    try{await fn(u.value,p.value);render()}catch(e){err.textContent=e.message}};
+  p.onkeydown=e=>{if(e.key==='Enter')go(Auth.login)()};
+  return h('div',{class:'auth'},h('h1',{},'AURA'),h('p',{class:'sub'},'Welcome to AURA. Your companion, always here.'),
+    u,h('div',{class:'pw'},p,eye),err,
+    h('div',{class:'bar'},h('button',{onclick:go(Auth.login)},'Log in'),h('button',{class:'g',onclick:go(Auth.register)},'Create account')),
+    h('p',{class:'note'},'Demo sign-in: accounts and chats are stored only in this browser (passwords are hashed, but this is not production security). No email or personal info needed.'));
 }
 
-/* ---------- Talk ---------- */
-const STAT={idle:'Tap “Start voice” or type',listening:'Listening…',thinking:'Thinking…',speaking:'Speaking — just talk to interrupt'};
-function setOrb(s){S.orb=s;const o=$('#orb');if(o)o.className='orb '+s;const t=$('#st');if(t)t.textContent=STAT[s]}
-function addMsg(role,text,mood){const l=$('#log');if(!l)return;const m=h('div',{class:'m '+role},text);if(mood&&mood!=='unclear'&&role==='assistant')m.append(h('small',{},`I’m reading you as ${mood} — correct me if I’m off`));l.append(m);m.scrollIntoView({block:'end',behavior:'smooth'})}
-function talk(){
-  const log=h('div',{id:'log'}),inp=h('input',{placeholder:'Type a message…',onkeydown:e=>{if(e.key==='Enter'&&inp.value.trim()){send(inp.value.trim());inp.value=''}}});
-  const story=h('button',{class:'g',onclick:()=>{S.story=!S.story;story.textContent=S.story?'Story: ON':'Story mode'}},S.story?'Story: ON':'Story mode');
-  api(`/p/${S.pid}/messages`).then(r=>{if(!log.children.length)r.slice(-10).forEach(m=>addMsg(m.role,m.content))}).catch(()=>{});
-  if(!S.ai)toast('Server has no ANTHROPIC_API_KEY yet — chat is disabled.');
-  clearTimeout(S.idleT);S.idleT=setTimeout(()=>{if(S.tab==='talk'&&!S.busy&&localStorage.spont==='1')send('','spontaneous')},240000);
-  return h('div',{},h('div',{class:'orbwrap'},h('div',{id:'orb',class:'orb '+S.orb})),h('div',{id:'st',class:'st'},STAT[S.orb]),h('canvas',{id:'wave',width:640,height:120}),
-    h('div',{class:'bar'},h('button',{id:'mic',onclick:e=>{S.live?stopVoice():startVoice();e.target.textContent=S.live?'End voice':'Start voice'}},S.live?'End voice':'Start voice'),story),
-    h('div',{class:'bar'},h('button',{class:'g',onclick:()=>send('','morning')},'Good morning'),h('button',{class:'g',onclick:()=>send('','goodnight')},'Goodnight'),h('button',{class:'g',onclick:()=>send('','spontaneous')},'Surprise me')),
-    log,inp);
-}
-async function send(text,mode){
-  if(S.busy)return;S.busy=true;speechSynthesis.cancel();if(text)addMsg('user',text);setOrb('thinking');
-  try{const r=await api(`/p/${S.pid}/chat`,'POST',{text,mode:mode||(S.story?'story':'chat')});addMsg('assistant',r.reply,r.mood);S.live?speak(r.reply):setOrb('idle')}
-  catch(e){toast(e.message);setOrb(S.live?'listening':'idle')}
-  S.busy=false;
-}
-function speak(t){
-  const u=new SpeechSynthesisUtterance(t),lang=LANG[prof().lang],vs=speechSynthesis.getVoices().filter(v=>v.lang.startsWith(lang.slice(0,2)));
-  u.voice=vs.find(v=>/female|natural|neural|samantha|google/i.test(v.name))||vs[0]||null;u.lang=lang;u.rate=.98;u.pitch=1.08;
-  u.onstart=()=>setOrb('speaking');u.onend=()=>setOrb(S.live?'listening':'idle');speechSynthesis.speak(u);
-}
-async function startVoice(){
-  if(!SR)return toast('Speech recognition needs Chrome, Edge or Safari.');
-  try{S.stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}})}catch{return toast('Microphone permission denied.')}
-  const ac=S.ac=new AudioContext(),an=ac.createAnalyser();an.fftSize=512;ac.createMediaStreamSource(S.stream).connect(an);const buf=new Uint8Array(an.fftSize);
-  S.meter=setInterval(()=>{an.getByteTimeDomainData(buf);let s=0;for(const x of buf)s+=((x-128)/128)**2;S.lvl=Math.min(1,Math.sqrt(s/buf.length)*6);const o=$('#orb');if(o)o.style.setProperty('--l',S.orb==='listening'?S.lvl:0)},50);
-  S.live=true;const r=S.rec=new SR();r.continuous=true;r.interimResults=true;r.lang=LANG[prof().lang];
-  r.onresult=e=>{if(speechSynthesis.speaking){speechSynthesis.cancel()}if(S.orb!=='thinking')setOrb('listening');let f='';for(let i=e.resultIndex;i<e.results.length;i++)if(e.results[i].isFinal)f+=e.results[i][0].transcript;if(f.trim())send(f.trim())};
-  r.onend=()=>{if(S.live)try{r.start()}catch{}};r.onerror=e=>{if(e.error==='not-allowed')stopVoice()};
-  r.start();setOrb('listening');
-}
-function stopVoice(){S.live=false;try{S.rec?.stop()}catch{}clearInterval(S.meter);S.stream?.getTracks().forEach(t=>t.stop());S.ac?.close();S.lvl=0;speechSynthesis.cancel();if(!S.busy)setOrb('idle')}
-(function loop(t){const c=$('#wave');if(c){const g=c.getContext('2d'),W=c.width,H=c.height,n=48;g.clearRect(0,0,W,H);for(let i=0;i<n;i++){const a=S.orb==='listening'?S.lvl*(.4+.6*Math.abs(Math.sin(i*.7+t/180))):S.orb==='speaking'?.3+.3*Math.sin(i*.5+t/120)*Math.sin(t/400+i):S.orb==='thinking'?.12+.1*Math.sin(i*.9-t/150):.04+.03*Math.sin(i+t/600),bh=Math.max(4,a*H);g.fillStyle=`hsl(${285+i*1.6},90%,${62+a*18}%)`;g.beginPath();g.roundRect(i*(W/n)+2,(H-bh)/2,W/n-6,bh,4);g.fill()}}requestAnimationFrame(loop)})(0);
-
-/* ---------- Memories / Diary / Goals ---------- */
-const META={memories:['What I remember about you','Add something to remember…'],diary:['Voice diary','Write or dictate today’s entry…'],goals:['Daily goals','Add a goal for today…']};
-function list(kind){
-  const ul=h('div'),inp=h(kind==='diary'?'textarea':'input',{placeholder:META[kind][1],rows:3});
-  const load=async()=>{const r=await api(`/p/${S.pid}/${kind}`);ul.replaceChildren(...(r.length?r:[{id:0,text:'Nothing here yet.',ts:0}]).map(it=>h('div',{class:'row'+(it.done?' done':'')},
-    kind==='goals'&&it.id?h('input',{type:'checkbox',checked:!!it.done,onchange:async e=>{await api(`/p/${S.pid}/goals/${it.id}`,'PATCH',{done:e.target.checked});load()}}):null,
-    h('span',{},it.text),it.id?h('small',{class:'sub'},new Date(it.ts*1e3).toLocaleDateString()):null,
-    it.id?h('button',{class:'g',onclick:async()=>{const t=prompt('Edit',it.text);if(t){await api(`/p/${S.pid}/${kind}/${it.id}`,'PATCH',{text:t});load()}}},'Edit'):null,
-    it.id?h('button',{class:'g',onclick:async()=>{await api(`/p/${S.pid}/${kind}/${it.id}`,'DELETE');load()}},'Delete'):null)))};
-  const add=async()=>{if(!inp.value.trim())return;try{await api(`/p/${S.pid}/${kind}`,'POST',{text:inp.value});inp.value='';load()}catch(e){toast(e.message)}};
-  inp.onkeydown=e=>{if(e.key==='Enter'&&kind!=='diary')add()};
-  const dict=kind==='diary'&&SR?h('button',{class:'g',onclick:e=>{const r=new SR();r.lang=LANG[prof().lang];r.interimResults=false;e.target.textContent='Listening…';r.onresult=x=>{inp.value+=(inp.value?' ':'')+x.results[0][0].transcript};r.onend=()=>e.target.textContent='Dictate';r.start()}},'Dictate'):null;
-  load().catch(e=>toast(e.message));
-  return h('div',{},h('h3',{},META[kind][0]),h('div',{class:'card'},inp,h('div',{class:'bar'},h('button',{onclick:add},'Add'),dict)),h('div',{class:'card'},ul));
+function shell(){
+  const nav=v=>()=>{S.view=v;render()};
+  return h('div',{class:'shell'},
+    h('header',{},h('div',{class:'who'},h('div',{class:'av'},display()[0].toUpperCase()),h('div',{},h('div',{class:'logo'},'AURA'),h('div',{class:'sub'},display()))),
+      h('div',{class:'bar',style:'margin:0;flex:none'},
+        h('button',{class:'g',onclick:nav(S.view==='chat'?'settings':'chat')},S.view==='chat'?'Settings':'Back to chat'))),
+    S.view==='chat'?chatView():settingsView());
 }
 
-/* ---------- Settings ---------- */
-function settings(){
-  const p=prof(),nm=h('input',{value:p.name}),tr=h('input',{value:p.traits,placeholder:'e.g. witty, calm, loves poetry'}),
-    it=h('input',{type:'range',min:0,max:3,value:p.intensity});
-  const L=h('select');[['en','English'],['kn','Kannada (ಕನ್ನಡ)'],['hi','Hindi (हिन्दी)']].forEach(([v,t])=>L.append(h('option',{value:v,...(p.lang===v?{selected:''}:{})},t)));
-  const sw=h('select',{onchange:e=>{S.pid=+e.target.value;render()}},S.profiles.map(x=>h('option',{value:x.id,...(x.id===S.pid?{selected:''}:{})},x.name)));
-  const sp=h('input',{type:'checkbox',checked:localStorage.spont==='1',style:'width:auto',onchange:e=>localStorage.spont=e.target.checked?'1':'0'});
-  const lvl=['Friendly','Warm','Romantic','Intense'];
-  return h('div',{},h('div',{class:'card'},h('label',{},'Companion profile (separate memory each)'),sw,
-    h('button',{class:'g',onclick:async()=>{const n=prompt('Name for the new companion?');if(!n)return;try{const c=await api('/profiles','POST',{name:n});S.profiles.push(c);S.pid=c.id;render()}catch(e){toast(e.message)}}},'+ New companion')),
-  h('div',{class:'card'},h('label',{},'Name'),nm,h('label',{},'Romance intensity: Friendly → Intense'),it,h('label',{},'Personality traits'),tr,h('label',{},'Language'),L,
-    h('p',{},sp,' Let her start a conversation after a few quiet minutes'),
-    h('button',{onclick:async()=>{try{Object.assign(p,await api('/profiles/'+p.id,'PATCH',{name:nm.value,traits:tr.value,intensity:+it.value,lang:L.value}));toast('Saved ('+lvl[p.intensity]+')');render()}catch(e){toast(e.message)}}},'Save')),
-  h('div',{class:'card'},h('label',{},'Privacy'),h('div',{class:'bar'},
-    h('button',{class:'g',onclick:async()=>{if(confirm('Clear this companion’s chat history?')){await api(`/p/${p.id}/messages`,'DELETE');toast('History cleared')}}},'Clear history'),
-    h('button',{class:'g',onclick:async()=>{const b=new Blob([JSON.stringify(await api('/export'),null,2)],{type:'application/json'});const a=h('a',{href:URL.createObjectURL(b),download:'aura-export.json'});a.click()}},'Export data'),
-    h('button',{class:'g',onclick:async()=>{if(S.profiles.length>1&&confirm('Delete this companion and all its memories?')){await api('/profiles/'+p.id,'DELETE');S.profiles=S.profiles.filter(x=>x.id!==p.id);S.pid=S.profiles[0].id;render()}}},'Delete companion')),
-    h('div',{class:'bar'},h('button',{class:'g',onclick:async()=>{await api('/logout','POST');S.user=null;render()}},'Log out'),
-    h('button',{class:'g',onclick:async()=>{if(confirm('Permanently delete your account and ALL data?')){await api('/me','DELETE');S.user=null;render()}}},'Delete account'))));
+function bubble(role,text){const m=h('div',{class:'m '+role},text);$('#log').append(m);m.scrollIntoView({block:'end'});return m}
+function chatView(){
+  const main=h('main',{},h('div',{id:'log'})),
+    ta=h('textarea',{rows:1,placeholder:'Message AURA…','aria-label':'Message'}),
+    btn=h('button',{'aria-label':'Send',onclick:()=>send()},'➤');
+  const fit=()=>{ta.style.height='auto';ta.style.height=Math.min(ta.scrollHeight,140)+'px'};
+  ta.oninput=fit;
+  ta.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()}};
+  async function send(){
+    const text=ta.value.trim();if(!text||S.busy)return; // ignore empty messages
+    S.busy=true;ta.value='';fit();
+    const hist=history();hist.push({role:'user',text});store.set(key('chat'),hist);bubble('user',text);
+    const ty=h('div',{class:'typing'},h('i'),h('i'),h('i'),'AURA is typing…');$('#log').append(ty);ty.scrollIntoView({block:'end'});
+    const mm=mem();let reply;
+    try{
+      await new Promise(r=>setTimeout(r,500+Math.random()*600));
+      reply=await AURA.engine.reply(text,{name:mm.name||display(),history:hist,mem:mm});
+    }catch(e){reply='Something went wrong on my side. Please try again.'}
+    store.set(key('mem'),mm);ty.remove();
+    const h2=history();h2.push({role:'assistant',text:reply});store.set(key('chat'),h2.slice(-300));
+    bubble('assistant',reply);S.busy=false;ta.focus();
+  }
+  setTimeout(()=>{const hist=history();
+    if(!hist.length)bubble('assistant',`Hi ${display()}, I'm AURA. How are you feeling today? 💜`);
+    else hist.slice(-60).forEach(m=>bubble(m.role,m.text));
+    main.scrollTop=main.scrollHeight},0);
+  return h('div',{style:'display:contents'},main,h('div',{class:'compose'},ta,btn));
 }
-boot();
+
+function settingsView(){
+  const clear=()=>{store.del(key('chat'));store.del(key('mem'));Local.last=''};
+  const nm=h('input',{value:display(),maxlength:20}),op=h('input',{type:'password',placeholder:'Current password',autocomplete:'current-password'}),
+    np=h('input',{type:'password',placeholder:'New password (6+ characters)',autocomplete:'new-password'});
+  return h('main',{},
+    h('div',{class:'card'},h('h3',{},'Display name'),nm,h('button',{onclick:()=>{const v=nm.value.trim();if(!v)return toast('Enter a name.');
+      const us=Auth.users();us[S.id].display=v;store.set(Auth.USERS,us);toast('Name saved');render()}},'Save name')),
+    h('div',{class:'card'},h('h3',{},'Change password'),op,np,h('button',{onclick:async()=>{
+      try{await Auth.changePassword(S.id,op.value,np.value);op.value=np.value='';toast('Password changed')}catch(e){toast(e.message)}}},'Update password')),
+    h('div',{class:'card'},h('h3',{},'Chat'),h('div',{class:'bar'},
+      h('button',{class:'g',onclick:()=>{if(confirm('Clear your chat history and what AURA remembers?')){clear();toast('Chat cleared')}}},'Clear chat history'),
+      h('button',{class:'g',onclick:()=>{Auth.logout();S.view='chat';render()}},'Log out'))),
+    h('div',{class:'card'},h('h3',{},'About AURA'),h('p',{class:'sub'},'AURA is a free, text-only companion. Replies come from a simple built-in rule-based engine that runs in your browser: no AI service, no API key, no cost. It remembers a few things you tell it (like your name and interests) on this device only. The engine is a single function, so a free or self-hosted AI model can be plugged in later without changing the interface.')));
+}
+render();
 </script></body></html>
